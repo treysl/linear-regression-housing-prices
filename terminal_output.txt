@@ -1,0 +1,55 @@
+============================================================
+HOUSE PRICE PREDICTION - LINEAR REGRESSION MODEL
+============================================================
+
+1. Loading data...
+   ✓ Loaded 100 data points
+
+   Data Summary:
+       House Size (sq ft)  Price (in $1000)
+count          100.000000        100.000000
+mean          1785.760000        318.483200
+std            443.093969         69.201651
+min           1013.000000        163.170000
+25%           1386.500000        263.227500
+50%           1810.000000        326.130000
+75%           2129.250000        373.575000
+max           2499.000000        437.980000
+
+2. Preparing data...
+   ✓ Features shape: (100, 1)
+   ✓ Target shape: (100,)
+
+3. Training linear regression model...
+   ✓ Model trained successfully
+
+4. Evaluating model performance...
+
+============================================================
+MODEL EVALUATION METRICS
+============================================================
+R² Score (Coefficient of Determination): 0.9602
+Mean Squared Error (MSE): 188.71
+Root Mean Squared Error (RMSE): 13.74 ($1000)
+Mean Absolute Error (MAE): 11.02 ($1000)
+============================================================
+
+Model Equation: Price = 45.19 + 0.1530 × House Size
+
+Interpretation:
+  - Intercept: $45.19K (base price)
+  - Slope: $0.1530K per sq ft
+  - R²: 96.02% of price variance is explained by house size
+
+5. Creating visualization...
+
+✓ Visualization saved as 'regression_plot.png'
+
+6. Example Predictions:
+------------------------------------------------------------
+   House Size: 1,500 sq ft → Predicted Price: $274.75K ($274,750.93)
+   House Size: 2,000 sq ft → Predicted Price: $351.27K ($351,270.16)
+   House Size: 2,500 sq ft → Predicted Price: $427.79K ($427,789.39)
+   House Size: 3,000 sq ft → Predicted Price: $504.31K ($504,308.62)
+
+============================================================

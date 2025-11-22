@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Predictor - Real Estate Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .predict-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .predict-btn:active {
+            transform: translateY(0);
+        }
+
+        .clear-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .clear-btn:hover {
+            background: #d0d0d0;
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-section.success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: #333;
+        }
+
+        .result-section.error {
+            background: #fee;
+            color: #c33;
+            border: 2px solid #fcc;
+        }
+
+        .result-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .price-display {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #333;
+        }
+
+        .price-detail {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .model-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .model-info h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .error-message {
+            color: #c33;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 House Price Predictor</h1>
+        <p class="subtitle">Predict house prices using our machine learning model</p>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label for="houseSize">House Size (square feet)</label>
+                <input 
+                    type="number" 
+                    id="houseSize" 
+                    placeholder="Enter house size (e.g., 2000)" 
+                    min="1" 
+                    step="1"
+                >
+            </div>
+            <div class="button-group">
+                <button class="predict-btn" onclick="predictPrice()">Predict Price</button>
+                <button class="clear-btn" onclick="clearInput()">Clear</button>
+            </div>
+        </div>
+
+        <div class="result-section" id="result">
+            <div class="result-title" id="resultTitle"></div>
+            <div class="price-display" id="priceDisplay"></div>
+            <div class="price-detail" id="priceDetail"></div>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+
+        <div class="model-info">
+            <h2>📊 Model Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Model Equation</div>
+                    <div class="info-value" id="equation">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">R² Score</div>
+                    <div class="info-value" id="r2">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">RMSE</div>
+                    <div class="info-value" id="rmse">Loading...</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Data Points</div>
+                    <div class="info-value" id="dataPoints">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let modelParams = null;
+
+        // Load model parameters when page loads
+        // Tries static JSON file first (for GitHub Pages), then Flask API (for local server)
+        async function loadModelParams() {
+            try {
+                // Try loading from static JSON file (GitHub Pages)
+                let response = await fetch('model_params.json');
+                if (!response.ok) {
+                    // If that fails, try Flask API endpoint
+                    response = await fetch('/model_info');
+                    if (!response.ok) {
+                        throw new Error('Failed to load model parameters');
+                    }
+                }
+                modelParams = await response.json();
+                updateModelInfo();
+            } catch (error) {
+                console.error('Error loading model:', error);
+                document.getElementById('equation').textContent = 'Error loading model';
+                document.getElementById('r2').textContent = 'Error';
+                document.getElementById('rmse').textContent = 'Error';
+                document.getElementById('dataPoints').textContent = 'Error';
+            }
+        }
+
+        function updateModelInfo() {
+            if (modelParams) {
+                document.getElementById('equation').textContent = modelParams.equation;
+                document.getElementById('r2').textContent = (modelParams.r2 * 100).toFixed(2) + '%';
+                document.getElementById('rmse').textContent = '$' + modelParams.rmse.toFixed(2) + 'K';
+                document.getElementById('dataPoints').textContent = modelParams.data_points;
+            }
+        }
+
+        function predictPrice() {
+            if (!modelParams) {
+                showError('Model not loaded yet. Please wait...');
+                return;
+            }
+
+            const houseSize = parseFloat(document.getElementById('houseSize').value);
+            const resultDiv = document.getElementById('result');
+            const priceDisplay = document.getElementById('priceDisplay');
+            const priceDetail = document.getElementById('priceDetail');
+            const resultTitle = document.getElementById('resultTitle');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Validate input
+            if (!houseSize || houseSize <= 0 || isNaN(houseSize)) {
+                showError('Please enter a valid house size greater than 0');
+                return;
+            }
+
+            // Calculate prediction using linear regression formula: y = intercept + slope * x
+            const predictedPriceK = modelParams.intercept + modelParams.slope * houseSize;
+            const predictedPrice = predictedPriceK * 1000;
+
+            // Display result
+            resultTitle.textContent = `Predicted Price for ${houseSize.toLocaleString()} sq ft`;
+            priceDisplay.textContent = '$' + predictedPrice.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            priceDetail.textContent = `($${predictedPriceK.toFixed(2)}K)`;
+            errorMessage.textContent = '';
+            resultDiv.className = 'result-section show success';
+        }
+
+        function showError(message) {
+            const resultDiv = document.getElementById('result');
+            const resultTitle = document.getElementById('resultTitle');
+            const priceDisplay = document.getElementById('priceDisplay');
+            const priceDetail = document.getElementById('priceDetail');
+            const errorMessage = document.getElementById('errorMessage');
+
+            resultTitle.textContent = 'Error';
+            priceDisplay.textContent = '';
+            priceDetail.textContent = '';
+            errorMessage.textContent = message;
+            resultDiv.className = 'result-section show error';
+        }
+
+        function clearInput() {
+            document.getElementById('houseSize').value = '';
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('houseSize').focus();
+        }
+
+        // Allow Enter key to trigger prediction
+        document.getElementById('houseSize').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                predictPrice();
+            }
+        });
+
+        // Load model parameters when page loads
+        loadModelParams();
+    </script>
+</body>
+</html>
+
