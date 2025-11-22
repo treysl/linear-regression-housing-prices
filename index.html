@@ -256,6 +256,7 @@
             transition: all 0.3s ease;
             white-space: nowrap;
             flex-shrink: 0;
+            box-shadow: none;
         }
 
         .nav-tab:hover {
@@ -263,8 +264,11 @@
         }
 
         .nav-tab.active {
-            color: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             border-bottom-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+            border-radius: 8px 8px 0 0;
         }
 
         .tab-content {
