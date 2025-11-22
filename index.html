@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>House Price Predictor - Real Estate Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -234,6 +234,183 @@
             font-weight: 600;
         }
 
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            color: #667eea;
+        }
+
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        /* Visualization Section */
+        .viz-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .viz-container h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+
+        /* Process Steps */
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .process-step {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .process-step:hover {
+            transform: translateX(5px);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .step-description {
+            color: #666;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .code-snippet {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+
+        /* Educational Section */
+        .concept-box {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .concept-box h3 {
+            color: #4338ca;
+            margin-bottom: 15px;
+        }
+
+        .concept-box p {
+            color: #1e1b4b;
+            line-height: 1.8;
+        }
+
+        .formula {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.3em;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            color: #4338ca;
+            font-weight: bold;
+        }
+
+        /* Data Table */
+        .data-table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
         .loading {
             display: none;
             text-align: center;
@@ -316,13 +493,47 @@
             .info-grid {
                 grid-template-columns: 1fr;
             }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                width: 100%;
+                text-align: left;
+            }
+
+            .chart-wrapper {
+                height: 300px;
+            }
+
+            .process-step {
+                padding: 20px;
+            }
+
+            .code-snippet {
+                font-size: 0.8em;
+                padding: 12px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🏠 House Price Predictor</h1>
+        <p class="subtitle">Interactive Machine Learning Model with Process Walkthrough</p>
 
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('predictor', this)">🔮 Predictor</button>
+            <button class="nav-tab" onclick="showTab('process', this)">📚 ML Process</button>
+            <button class="nav-tab" onclick="showTab('visualization', this)">📊 Visualization</button>
+            <button class="nav-tab" onclick="showTab('data', this)">📈 Data Exploration</button>
+            <button class="nav-tab" onclick="showTab('education', this)">🎓 Learn</button>
+        </div>
+
+        <!-- Predictor Tab -->
+        <div id="predictor" class="tab-content active">
         <div class="input-section">
             <div class="input-group">
                 <label for="houseSize">House Size (square feet)</label>
@@ -369,10 +580,267 @@
                 </div>
             </div>
         </div>
+        </div>
+
+        <!-- ML Process Tab -->
+        <div id="process" class="tab-content">
+            <div class="process-steps">
+                <div class="process-step">
+                    <div>
+                        <span class="step-number">1</span>
+                        <span class="step-title">Data Collection & Loading</span>
+                    </div>
+                    <div class="step-description">
+                        We start with a dataset containing 100 house records, each with size (sq ft) and price (in $1000). 
+                        The data is loaded from a CSV file and cleaned to remove any missing values.
+                        <div class="code-snippet">df = pd.read_csv('house_prices.csv')
+df = df.dropna()  # Remove missing values</div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div>
+                        <span class="step-number">2</span>
+                        <span class="step-title">Data Preparation</span>
+                    </div>
+                    <div class="step-description">
+                        The data is split into features (X = house size) and target variable (y = price). 
+                        This prepares the data for the machine learning algorithm.
+                        <div class="code-snippet">X = df[['House Size (sq ft)']].values
+y = df['Price (in $1000)'].values</div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div>
+                        <span class="step-number">3</span>
+                        <span class="step-title">Model Training</span>
+                    </div>
+                    <div class="step-description">
+                        A Linear Regression model is trained to find the best-fit line that minimizes the 
+                        sum of squared errors between predicted and actual prices. The algorithm calculates 
+                        the optimal slope and intercept.
+                        <div class="code-snippet">model = LinearRegression()
+model.fit(X, y)  # Train the model</div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div>
+                        <span class="step-number">4</span>
+                        <span class="step-title">Model Evaluation</span>
+                    </div>
+                    <div class="step-description">
+                        The model's performance is measured using metrics like R² (coefficient of determination), 
+                        RMSE (Root Mean Squared Error), and MAE (Mean Absolute Error). These metrics tell us 
+                        how well the model fits the data and how accurate its predictions are.
+                        <div class="code-snippet">r2 = r2_score(y, y_pred)  # How much variance is explained
+rmse = sqrt(mean_squared_error(y, y_pred))  # Average error</div>
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div>
+                        <span class="step-number">5</span>
+                        <span class="step-title">Visualization</span>
+                    </div>
+                    <div class="step-description">
+                        A scatter plot is created showing actual data points and the regression line. 
+                        This visual representation helps understand the relationship between house size and price.
+                    </div>
+                </div>
+
+                <div class="process-step">
+                    <div>
+                        <span class="step-number">6</span>
+                        <span class="step-title">Prediction</span>
+                    </div>
+                    <div class="step-description">
+                        Once trained, the model can predict prices for new house sizes using the learned 
+                        equation: <strong>Price = Intercept + Slope × House Size</strong>
+                        <div class="code-snippet">predicted_price = model.predict([[house_size]])</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization Tab -->
+        <div id="visualization" class="tab-content">
+            <div class="viz-container">
+                <h3>📊 Interactive Regression Visualization</h3>
+                <p style="color: #666; margin-bottom: 20px;">
+                    This chart shows all data points and the fitted regression line. 
+                    Hover over points to see exact values, or use the predictor tab to add your own prediction!
+                </p>
+                <div class="chart-wrapper">
+                    <canvas id="regressionChart"></canvas>
+                </div>
+            </div>
+            <div class="viz-container">
+                <h3>📉 Residuals Analysis</h3>
+                <p style="color: #666; margin-bottom: 20px;">
+                    Residuals show the difference between actual and predicted values. 
+                    A good model should have residuals randomly distributed around zero.
+                </p>
+                <div class="chart-wrapper">
+                    <canvas id="residualsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Exploration Tab -->
+        <div id="data" class="tab-content">
+            <div class="model-info">
+                <h2>📈 Dataset Overview</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Total Records</div>
+                        <div class="info-value" id="totalRecords">100</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Min House Size</div>
+                        <div class="info-value" id="minSize">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Max House Size</div>
+                        <div class="info-value" id="maxSize">Loading...</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Avg House Size</div>
+                        <div class="info-value" id="avgSize">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="viz-container">
+                <h3>📋 Sample Data (First 20 Records)</h3>
+                <div class="data-table-container">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>House Size (sq ft)</th>
+                                <th>Price ($1000)</th>
+                                <th>Price ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Education Tab -->
+        <div id="education" class="tab-content">
+            <div class="concept-box">
+                <h3>🎯 What is Linear Regression?</h3>
+                <p>
+                    Linear Regression is a fundamental machine learning algorithm that finds the best straight line 
+                    to fit through data points. It's used to predict a continuous value (like house price) based on 
+                    one or more input features (like house size).
+                </p>
+            </div>
+
+            <div class="concept-box">
+                <h3>📐 The Math Behind It</h3>
+                <p>
+                    Linear regression finds a line described by the equation:
+                </p>
+                <div class="formula">y = mx + b</div>
+                <p>
+                    Where:
+                </p>
+                <ul style="color: #1e1b4b; line-height: 2;">
+                    <li><strong>y</strong> = predicted price (dependent variable)</li>
+                    <li><strong>x</strong> = house size (independent variable)</li>
+                    <li><strong>m</strong> = slope (how much price increases per sq ft)</li>
+                    <li><strong>b</strong> = intercept (base price when size is 0)</li>
+                </ul>
+            </div>
+
+            <div class="concept-box">
+                <h3>🎯 How Does It Learn?</h3>
+                <p>
+                    The algorithm uses a method called <strong>Ordinary Least Squares (OLS)</strong> to find the 
+                    optimal line. It minimizes the sum of squared differences between actual prices and predicted 
+                    prices. This ensures the line is as close as possible to all data points.
+                </p>
+            </div>
+
+            <div class="concept-box">
+                <h3>📊 Understanding R² Score</h3>
+                <p>
+                    R² (R-squared) measures how well the model explains the variance in the data:
+                </p>
+                <ul style="color: #1e1b4b; line-height: 2;">
+                    <li><strong>R² = 1.0</strong>: Perfect fit (all points on the line)</li>
+                    <li><strong>R² = 0.96</strong>: Excellent fit (96% of variance explained)</li>
+                    <li><strong>R² = 0.0</strong>: Model is no better than guessing the mean</li>
+                    <li><strong>R² < 0.0</strong>: Model performs worse than the mean</li>
+                </ul>
+            </div>
+
+            <div class="concept-box">
+                <h3>⚖️ Model Metrics Explained</h3>
+                <p>
+                    <strong>RMSE (Root Mean Squared Error)</strong>: Average prediction error in the same units as 
+                    the target variable. Lower is better. Our model has an RMSE of ~$13.74K, meaning predictions 
+                    are typically within $13,740 of the actual price.
+                </p>
+                <p style="margin-top: 15px;">
+                    <strong>MAE (Mean Absolute Error)</strong>: Average absolute difference between predicted and 
+                    actual values. More intuitive than RMSE as it's not squared.
+                </p>
+            </div>
+
+            <div class="concept-box">
+                <h3>🔍 Limitations & Assumptions</h3>
+                <p>
+                    Linear regression assumes:
+                </p>
+                <ul style="color: #1e1b4b; line-height: 2;">
+                    <li>A linear relationship between features and target</li>
+                    <li>Independence of observations</li>
+                    <li>Homoscedasticity (constant variance of errors)</li>
+                    <li>Normally distributed residuals</li>
+                </ul>
+                <p style="margin-top: 15px;">
+                    In real estate, many factors affect price (location, age, condition, etc.), so this simple 
+                    model is a starting point. More complex models would include multiple features.
+                </p>
+            </div>
+        </div>
     </div>
 
     <script>
         let modelParams = null;
+        let housingData = [];
+        let regressionChart = null;
+        let residualsChart = null;
+
+        // Tab switching functionality
+        function showTab(tabName, element) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            if (element) {
+                element.classList.add('active');
+            }
+            
+            // Initialize charts if needed
+            if (tabName === 'visualization' && modelParams && housingData.length > 0) {
+                setTimeout(() => {
+                    createRegressionChart();
+                    createResidualsChart();
+                }, 100);
+            }
+        }
 
         // Load model parameters when page loads
         // Tries static JSON file first (for GitHub Pages), then Flask API (for local server)
@@ -389,12 +857,41 @@
                 }
                 modelParams = await response.json();
                 updateModelInfo();
+                loadHousingData();
             } catch (error) {
                 console.error('Error loading model:', error);
                 document.getElementById('equation').textContent = 'Error loading model';
                 document.getElementById('r2').textContent = 'Error';
                 document.getElementById('rmse').textContent = 'Error';
                 document.getElementById('dataPoints').textContent = 'Error';
+            }
+        }
+
+        // Load housing data
+        async function loadHousingData() {
+            try {
+                const response = await fetch('house_prices.csv');
+                const text = await response.text();
+                const lines = text.trim().split('\n');
+                
+                // Skip header
+                for (let i = 1; i < lines.length; i++) {
+                    const [size, price] = lines[i].split(',');
+                    if (size && price) {
+                        housingData.push({
+                            size: parseFloat(size),
+                            price: parseFloat(price)
+                        });
+                    }
+                }
+                
+                updateDataExploration();
+                if (document.getElementById('visualization').classList.contains('active')) {
+                    createRegressionChart();
+                    createResidualsChart();
+                }
+            } catch (error) {
+                console.error('Error loading data:', error);
             }
         }
 
@@ -405,6 +902,212 @@
                 document.getElementById('rmse').textContent = '$' + modelParams.rmse.toFixed(2) + 'K';
                 document.getElementById('dataPoints').textContent = modelParams.data_points;
             }
+        }
+
+        function updateDataExploration() {
+            if (housingData.length > 0) {
+                const sizes = housingData.map(d => d.size);
+                const prices = housingData.map(d => d.price);
+                
+                document.getElementById('minSize').textContent = Math.min(...sizes).toLocaleString() + ' sq ft';
+                document.getElementById('maxSize').textContent = Math.max(...sizes).toLocaleString() + ' sq ft';
+                document.getElementById('avgSize').textContent = (sizes.reduce((a, b) => a + b, 0) / sizes.length).toFixed(0) + ' sq ft';
+                
+                // Populate data table
+                const tableBody = document.getElementById('dataTableBody');
+                tableBody.innerHTML = '';
+                housingData.slice(0, 20).forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.size.toLocaleString()}</td>
+                        <td>$${row.price.toFixed(2)}K</td>
+                        <td>$${(row.price * 1000).toLocaleString()}</td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            }
+        }
+
+        function createRegressionChart() {
+            if (!modelParams || housingData.length === 0) return;
+            
+            const ctx = document.getElementById('regressionChart');
+            if (!ctx) return;
+            
+            // Destroy existing chart if it exists
+            if (regressionChart) {
+                regressionChart.destroy();
+            }
+            
+            // Prepare data
+            const dataPoints = housingData.map(d => ({
+                x: d.size,
+                y: d.price
+            }));
+            
+            // Generate regression line points
+            const minSize = Math.min(...housingData.map(d => d.size));
+            const maxSize = Math.max(...housingData.map(d => d.size));
+            const linePoints = [];
+            for (let size = minSize; size <= maxSize; size += 10) {
+                linePoints.push({
+                    x: size,
+                    y: modelParams.intercept + modelParams.slope * size
+                });
+            }
+            
+            regressionChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Actual Prices',
+                            data: dataPoints,
+                            backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        },
+                        {
+                            label: 'Regression Line',
+                            data: linePoints,
+                            type: 'line',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 3,
+                            fill: false,
+                            pointRadius: 0,
+                            tension: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'House Price vs Size: Linear Regression Model',
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 0) {
+                                        return `Size: ${context.parsed.x.toLocaleString()} sq ft, Price: $${context.parsed.y.toFixed(2)}K`;
+                                    }
+                                    return `Predicted: $${context.parsed.y.toFixed(2)}K`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'House Size (sq ft)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Price (in $1000)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createResidualsChart() {
+            if (!modelParams || housingData.length === 0) return;
+            
+            const ctx = document.getElementById('residualsChart');
+            if (!ctx) return;
+            
+            // Destroy existing chart if it exists
+            if (residualsChart) {
+                residualsChart.destroy();
+            }
+            
+            // Calculate residuals
+            const residuals = housingData.map(d => {
+                const predicted = modelParams.intercept + modelParams.slope * d.size;
+                return {
+                    x: d.size,
+                    y: d.price - predicted
+                };
+            });
+            
+            residualsChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Residuals',
+                            data: residuals,
+                            backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        },
+                        {
+                            label: 'Zero Line',
+                            data: [
+                                { x: Math.min(...housingData.map(d => d.size)), y: 0 },
+                                { x: Math.max(...housingData.map(d => d.size)), y: 0 }
+                            ],
+                            type: 'line',
+                            borderColor: 'rgba(0, 0, 0, 0.5)',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Residuals Plot: Actual - Predicted Prices',
+                            font: { size: 16 }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 0) {
+                                        return `Residual: $${context.parsed.y.toFixed(2)}K`;
+                                    }
+                                    return 'Zero line';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'House Size (sq ft)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Residual (Actual - Predicted) in $1000'
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function predictPrice() {
