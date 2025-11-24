@@ -1,0 +1,92 @@
+"""
+Linear Regression Model for House Price Prediction
+===================================================
+"""
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
+import warnings
+warnings.filterwarnings('ignore')
+
+
+def load_data(filepath='house_prices.csv'):
+    """Load the housing data from CSV file."""
+    df = pd.read_csv(filepath)
+    # Removing any empty rows
+    df = df.dropna()
+    return df
+
+
+def prepare_data(df):
+    """Prepare data for modeling."""
+    # Extracting features (house size) and target (price)
+    X = df[['House Size (sq ft)']].values
+    y = df['Price (in $1000)'].values
+    return X, y
+
+
+def train_model(X, y):
+    """Training linear regression model."""
+    model = LinearRegression()
+    model.fit(X, y)
+    return model
+
+
+def evaluate_model(model, X, y):
+    """Evaluating model performance."""
+    y_pred = model.predict(X)
+    
+    r2 = r2_score(y, y_pred)
+    mse = mean_squared_error(y, y_pred)
+    rmse = np.sqrt(mse)
+    mae = mean_absolute_error(y, y_pred)
+    
+    print("\n" + "="*60)
+    print("MODEL EVALUATION METRICS")
+    print("="*60)
+    print(f"R² Score (Coefficient of Determination): {r2:.4f}")
+    print(f"Mean Squared Error (MSE): {mse:.2f}")
+    print(f"Root Mean Squared Error (RMSE): {rmse:.2f} ($1000)")
+    print(f"Mean Absolute Error (MAE): {mae:.2f} ($1000)")
+    print("="*60)
+    
+    print(f"\nModel Equation: Price = {model.intercept_:.2f} + {model.coef_[0]:.4f} × House Size")
+    print(f"\nInterpretation:")
+    print(f"  - Intercept: ${model.intercept_:.2f}K (base price)")
+    print(f"  - Slope: ${model.coef_[0]:.4f}K per sq ft")
+    print(f"  - R²: {r2*100:.2f}% of price variance is explained by house size")
+    
+    return y_pred, r2, rmse, mae
+
+
+def visualize_results(X, y, y_pred, model):
+    """Creating visualization of the regression model."""
+    plt.figure(figsize=(12, 8))
+    
+    # Scatter plot of actual data (price vs house size)
+    plt.scatter(X, y, alpha=0.6, color='blue', label='Actual Prices', s=50)
+    
+    # Regression line (predicted price vs house size)
+    X_line = np.linspace(X.min(), X.max(), 100).reshape(-1, 1)
+    y_line = model.predict(X_line)
+    plt.plot(X_line, y_line, color='red', linewidth=2, label='Regression Line')
+    
+    plt.xlabel('House Size (sq ft)', fontsize=12)
+    plt.ylabel('Price (in $1000)', fontsize=12)
+    plt.title('Linear Regression: House Price Prediction\nBased on House Size', fontsize=14, fontweight='bold')
+    plt.legend(fontsize=11)
+    plt.grid(True, alpha=0.3)
+    
+    # Adding model equation as text
+    equation_text = f'Price = {model.intercept_:.2f} + {model.coef_[0]:.4f} × Size'
+    plt.text(0.05, 0.95, equation_text, transform=plt.gca().transAxes,
+             fontsize=10, verticalalignment='top', bbox=dict(boxstyle='round', 
+             facecolor='wheat', alpha=0.5))
+    
+    plt.tight_layout()
+    plt.savefig('regression_plot.png', dpi=300, bbox_inches='tight')
+    print("\n✓ Visualization saved as 'regression_plot.png'")
+    plt.show()
